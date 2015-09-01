@@ -6,16 +6,20 @@ from Calendar import Day, Week, Month
 class CalendarBase(tk.Toplevel):
     # root:
     #     no space needed
-    #     variable "calendar" can be set to None
+
+    isopen = False
     
     def __init__(self, root):
+        CalendarBase.isopen = True
+        
         # Variables
-        self.view = 'day'
         self.log = logging.getLogger('op.calendar')
         self.colour = Colours.calendarbase
         self.relief = Relief.calendarbase
         self.root = root
-
+        self.doctor = tk.StringVar()
+        self.view = tk.StringVar()
+        
         # Build Window
         tk.Toplevel.__init__(self, root, bg=self.colour['frame'])
         self.title('Calendar')
@@ -94,9 +98,6 @@ class CalendarBase(tk.Toplevel):
                                        activebackground=self.colour['buttonactive'],
                                        command=self.Refresh)
 
-        # Start by displaying day information
-        self.View_Day()
-        
         # Initial Widget Properties
         self.yearbox.insert(0, 'yyyy')
         self.monthbox.insert(0, 'mm')
@@ -107,6 +108,7 @@ class CalendarBase(tk.Toplevel):
         self.jumpbackmenu.menu.add_command(label='week')
         self.jumpbackmenu.menu.add_command(label='month')
         self.jumpbackmenu.menu.add_command(label='year')
+
         self.jumpforwardmenu.menu = tk.Menu(self.jumpforwardmenu, tearoff=0)
         self.jumpforwardmenu['menu'] = self.jumpforwardmenu.menu
         self.jumpforwardmenu.menu.add_command(label='week')
@@ -115,13 +117,16 @@ class CalendarBase(tk.Toplevel):
 
         self.doctormenu.menu = tk.Menu(self.doctormenu, tearoff=0)
         self.doctormenu['menu'] = self.doctormenu.menu
-        self.doctormenu.menu.add_command(label='Jessica')        
+        self.doctormenu.menu.add_radiobutton(label='Jessica', value='jessica', variable=self.doctor)
+        self.doctormenu.menu.add_radiobutton(label='Connor', value='connor', variable=self.doctor)
+        self.doctor.set('jessica')
 
         self.viewmenu.menu = tk.Menu(self.viewmenu, tearoff=0)
         self.viewmenu['menu'] = self.viewmenu.menu
-        self.viewmenu.menu.add_command(label='day', command=self.View_Day)
-        self.viewmenu.menu.add_command(label='week', command=self.View_Week)
-        self.viewmenu.menu.add_command(label='month', command=self.View_Month)        
+        self.viewmenu.menu.add_radiobutton(label='day', value='day', variable=self.view, command=self.View_Set)
+        self.viewmenu.menu.add_radiobutton(label='week', value='week', variable=self.view, command=self.View_Set)
+        self.viewmenu.menu.add_radiobutton(label='month', value='month', variable=self.view, command=self.View_Set)
+        self.view.set('day')
 
         # Place Widgets
         self.yearbox.grid(row=0, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
@@ -138,43 +143,38 @@ class CalendarBase(tk.Toplevel):
         self.printbutton.grid(row=0, column=9, sticky=tk.N+tk.S+tk.E+tk.W)
         self.refreshbutton.grid(row=0, column=10, sticky=tk.N+tk.S+tk.E+tk.W)
 
-    def View_Day(self, event=None):
+        self.View_Set()
+
+    def View_Set(self, event=None):
         try:
             self.calendarspace.destroy()
         except:
             pass
-        self.calendarspace = Day(self)
-        self.calendarspace.grid(row=1, column=0, columnspan=11, sticky=tk.N+tk.S+tk.E+tk.W, padx=5, pady=5)
-        self.view = 'day'
-
-    def View_Week(self):
-        try:
-            self.calendarspace.destroy()
-        except:
-            pass
-        self.calendarspace = Week(self, 9)
-        self.calendarspace.grid(row=1, column=0, columnspan=11, sticky=tk.N+tk.S+tk.E+tk.W, padx=5, pady=5)
-        self.view = 'week'
-
-    def View_Month(self):
-        try:
-            self.calendarspace.destroy()
-        except:
-            pass
-        self.calendarspace = Month(self)
-        self.calendarspace.grid(row=1, column=0, columnspan=11, sticky=tk.N+tk.S+tk.E+tk.W, padx=5, pady=5)
-        self.view = 'month'
-
-    def Refresh(self):
-        if self.view == 'day':
-            self.View_Day()
-        elif self.view == 'week':
-            self.View_Week()
-        elif self.view == 'month':
-            self.View_Month()
+        if self.view.get() == 'day':
+            self.calendarspace = Day(self)
+        elif self.view.get() == 'week':
+            self.calendarspace = Week(self, 9)
+        elif self.view.get() == 'month':
+            self.calendarspace = Month(self)
         else:
-            self.log.error('Refresh failed to understand self.view variable')
+            self.log.error('Calendar Base: Could not set view, unrecognized self.view value: %s' % self.view.get())
+        self.calendarspace.grid(row=1, column=0, columnspan=11, sticky=tk.N+tk.S+tk.E+tk.W, padx=5, pady=5)
+            
+    def View_Day(self, event=None):
+        self.view.set('day')
+        self.View_Set()
+        
+    def View_Week(self, event=None):
+        self.view.set('week')
+        self.View_Set()
+
+    def View_Month(self, event=None):
+        self.view.set('month')
+        self.View_Set()
+
+    def Refresh(self, event=None):
+        self.View_Set()
 
     def Close(self):
-        self.root.calendar = None
+        CalendarBase.isopen = False
         self.destroy()

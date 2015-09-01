@@ -1,6 +1,8 @@
 import Tkinter as tk
 import logging
 from Themes import Colours, Relief
+from Patient import PatientView
+from Appointment import AppointmentBase
 
 #------------------------------------------------------------------------------
 class Day(tk.PanedWindow):
@@ -57,7 +59,7 @@ class Day_Available(tk.Frame):
         self.scrollbar['command'] = self.scheduledlistbox.yview
 
         # Bind Double Click to switch to day view
-        self.scheduledlistbox.bind('<Double-Button-1>', self.saynumber)
+        self.scheduledlistbox.bind('<Double-Button-1>', self.NewAppointment)
 
         self.Fill()
 
@@ -65,11 +67,10 @@ class Day_Available(tk.Frame):
         for i in range(100):
             self.scheduledlistbox.insert(tk.END, 'time available here, %d' % i)
 
-    def saynumber(self, event):#deleteme
-        selection = self.scheduledlistbox.curselection()
-        value = self.scheduledlistbox.get(selection[0])
-        print 'at %d we have this string: \"%s\"' % (selection[0], value)
-
+    def NewAppointment(self, event=None):
+        if not AppointmentBase.isopen:
+            self.appointment = AppointmentBase(self)
+            
         
 # Shows the currently scheduled appointments
 class Day_Scheduled(tk.Frame):
@@ -107,7 +108,7 @@ class Day_Scheduled(tk.Frame):
         self.scrollbar['command'] = self.scheduledlistbox.yview
 
         # Bind Double Click to switch to day view
-        self.scheduledlistbox.bind('<Double-Button-1>', self.saynumber)
+        self.scheduledlistbox.bind('<Double-Button-1>', self.Patient_View)
 
         self.Fill()
 
@@ -115,11 +116,10 @@ class Day_Scheduled(tk.Frame):
         for i in range(100):
             self.scheduledlistbox.insert(tk.END, 'person info here, %d' % i)
 
-    def saynumber(self, event):#deleteme
-        selection = self.scheduledlistbox.curselection()
-        value = self.scheduledlistbox.get(selection[0])
-        print 'at %d we have this string: \"%s\"' % (selection[0], value)
-        
+    def Patient_View(self, event=None):
+        if not PatientView.isopen:
+            self.patient = PatientView(self)
+                    
 # To be used for the week and month views
 class Day_Simple(tk.Frame):
     # root:

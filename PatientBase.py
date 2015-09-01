@@ -4,19 +4,27 @@ from Patient import PatientList
 
 class PatientBase(tk.Toplevel):
     # root:
-    #     -no space needed
-    #     -variable "patients"" can be set to None
-    
+    #     no space needed
+
+    isopen = False
     def __init__(self,root):
+        PatientBase.isopen = True
         # Variables
         self.colour = Colours.patientbase
         self.relief = Relief.patientbase
         self.root = root
+        self.sortby = tk.StringVar()
+        self.searchby = {'name':tk.BooleanVar(),
+                         'healthcardnumber':tk.BooleanVar(),
+                         'phonenumber':tk.BooleanVar(),
+                         'notes':tk.BooleanVar()}
+        self.doctor = tk.StringVar()
         
         # Build Window
         tk.Toplevel.__init__(self, root, bg=self.colour['frame'])
         self.title('Patient List')
         self.protocol('WM_DELETE_WINDOW', self.Close)
+
         # Configure Window
         for i in range(6): self.grid_columnconfigure(i, weight=1)
 
@@ -28,13 +36,13 @@ class PatientBase(tk.Toplevel):
                                     bg=self.colour['entry'],
                                     relief=self.relief['entry'])
 
-        self.searchby = tk.Menubutton(self,
+        self.searchbymenu = tk.Menubutton(self,
                                       text='Search By',
                                       bg=self.colour['button'],
                                       relief=self.relief['button'],
                                       activebackground=self.colour['buttonactive'])
 
-        self.sortby = tk.Menubutton(self,
+        self.sortbymenu = tk.Menubutton(self,
                                     text='Sort',
                                     bg=self.colour['button'],
                                     relief=self.relief['button'],
@@ -46,7 +54,7 @@ class PatientBase(tk.Toplevel):
                                         relief=self.relief['button'],
                                         activebackground=self.colour['buttonactive'])
         
-        self.newpatient = tk.Button(self,
+        self.newpatientbutton = tk.Button(self,
                                     text='New',
                                     bg=self.colour['button'],
                                     relief=self.relief['button'],
@@ -71,29 +79,33 @@ class PatientBase(tk.Toplevel):
         self.patientlist = PatientList(self)
         
         # Menu Configure
-        self.searchby.menu = tk.Menu(self.searchby, tearoff=0)
-        self.searchby['menu'] = self.searchby.menu
-        self.searchby.menu.add_command(label='Name')
-        self.searchby.menu.add_command(label='Healthcard #')
-        self.searchby.menu.add_command(label='Phone #')
-        self.searchby.menu.add_command(label='Notes')
+        self.searchbymenu.menu = tk.Menu(self.searchbymenu, tearoff=0)
+        self.searchbymenu['menu'] = self.searchbymenu.menu
+        self.searchbymenu.menu.add_checkbutton(label='Name', onvalue=True, offvalue=False, variable=self.searchby['name'])
+        self.searchbymenu.menu.add_checkbutton(label='Healthcard #', onvalue=True, offvalue=False, variable=self.searchby['healthcardnumber'])
+        self.searchbymenu.menu.add_checkbutton(label='Phone #', onvalue=True, offvalue=False, variable=self.searchby['phonenumber'])
+        self.searchbymenu.menu.add_checkbutton(label='Notes', onvalue=True, offvalue=False, variable=self.searchby['notes'])
+        self.searchby['name'].set(True)
 
-        self.sortby.menu = tk.Menu(self.sortby, tearoff=0)
-        self.sortby['menu'] = self.sortby.menu
-        self.sortby.menu.add_command(label='Name')
-        self.sortby.menu.add_command(label='Appointment')
-        self.sortby.menu.add_command(label='Recall')
+        self.sortbymenu.menu = tk.Menu(self.sortbymenu, tearoff=0)
+        self.sortbymenu['menu'] = self.sortbymenu.menu
+        self.sortbymenu.menu.add_radiobutton(label='Name', value='name', variable=self.sortby)
+        self.sortbymenu.menu.add_radiobutton(label='Appointment', value='appointment', variable=self.sortby)
+        self.sortbymenu.menu.add_radiobutton(label='Recall', value='recall', variable=self.sortby)
+        self.sortby.set('name')
 
         self.doctormenu.menu = tk.Menu(self.doctormenu, tearoff=0)
         self.doctormenu['menu'] = self.doctormenu.menu
-        self.doctormenu.menu.add_command(label='Jessica')        
-
+        self.doctormenu.menu.add_radiobutton(label='Jessica', value='jessica', variable=self.doctor)
+        self.doctormenu.menu.add_radiobutton(label='Connor', value='connor', variable=self.doctor)
+        self.doctor.set('jessica')
+        
         # Place Widgets
         self.searchentry.grid(row=0,column=0, sticky=tk.N+tk.S+tk.E+tk.W)
-        self.searchby.grid(row=0, column=1, sticky=tk.N+tk.S+tk.E+tk.W)
-        self.sortby.grid(row=0, column=2, sticky=tk.N+tk.S+tk.E+tk.W)
+        self.searchbymenu.grid(row=0, column=1, sticky=tk.N+tk.S+tk.E+tk.W)
+        self.sortbymenu.grid(row=0, column=2, sticky=tk.N+tk.S+tk.E+tk.W)
         self.doctormenu.grid(row=0, column=3, sticky=tk.N+tk.S+tk.E+tk.W)
-        self.newpatient.grid(row=0, column=4, sticky=tk.N+tk.S+tk.E+tk.W)
+        self.newpatientbutton.grid(row=0, column=4, sticky=tk.N+tk.S+tk.E+tk.W)
         self.printbutton.grid(row=0,column=5, sticky=tk.N+tk.S+tk.E+tk.W)
         self.refreshbutton.grid(row=0, column=6, sticky=tk.N+tk.S+tk.E+tk.W)
 
@@ -110,5 +122,5 @@ class PatientBase(tk.Toplevel):
         
         
     def Close(self):
-        self.root.patients = None
+        PatientBase.isopen = False
         self.destroy()

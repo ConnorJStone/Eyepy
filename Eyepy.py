@@ -1,5 +1,6 @@
 from CalendarBase import CalendarBase
 from PatientBase import PatientBase
+from StockBase import StockBase
 from Themes import Colours, Relief
 import Tkinter as tk
 
@@ -8,7 +9,8 @@ class RootMenu(tk.Tk):
     
     def __init__(self):
         tk.Tk.__init__(self)
-
+        self.title('Eyepy home')
+        
         self.calendar = None
         self.patients = None
         self.stock = None
@@ -41,17 +43,16 @@ class RootMenu(tk.Tk):
         self.mainloop()
 
     def StartCalendar(self, event=None):
-        if self.calendar == None:
+        if not CalendarBase.isopen:
             self.calendar = CalendarBase(self)
 
     def StartPatients(self, event=None):
-        if self.patients == None:
+        if not PatientBase.isopen:
             self.patients = PatientBase(self)
 
     def StartStock(self, event=None):
-        if self.stock == None:
-            pass
-            #self.stock = StockBase(self)
+        if not StockBase.isopen:
+            self.stock = StockBase(self)
 
 root = RootMenu()
 

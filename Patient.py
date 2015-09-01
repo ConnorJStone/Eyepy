@@ -1,5 +1,6 @@
 import Tkinter as tk
 from Themes import Colours, Relief
+from Appointment import AppointmentBase
 import logging
 
 
@@ -7,6 +8,9 @@ import logging
 class PatientList(tk.Frame):
     # root:
     #     space for frame
+    #     variable "sortby" has a string
+    #     variable "searchby" has a dictionary indexed by strings with boolean values
+    #     variable "doctor" has a string
     
     def __init__(self,root):
         # Variables
@@ -14,7 +18,6 @@ class PatientList(tk.Frame):
         self.relief = Relief.patient
         self.log = logging.getLogger('op.patient.list')
         self.patients = []
-        self.sortby = 'name'
         self.root = root
         self.patientview = None
         
@@ -50,15 +53,18 @@ class PatientList(tk.Frame):
             self.patientlistbox.insert(tk.END, 'this person, %d' % i)
 
     def Patient_View(self, event=None):
-        if self.patientview == None:
+        if not PatientView.isopen:
             self.patientview = PatientView(self)
 
 class PatientView(tk.Toplevel):
     # root:
     #     no space needed
-    #     variable "patientview" can be set to None
+
+    isopen = False
     
     def __init__(self, root):
+        PatientView.isopen = True
+        
         # Variables
         self.colour = Colours.patient
         self.relief = Relief.patient
@@ -100,7 +106,7 @@ class PatientView(tk.Toplevel):
         self.savebutton = tk.Button(self, text='Save', highlightthickness=0, bg=self.colour['savebutton'], relief=self.relief['savebutton'])
 
         self.copybutton = tk.Button(self, text='Copy', highlightthickness=0, bg=self.colour['button'], relief=self.relief['button'])
-        self.appointmentbutton = tk.Button(self, text='Appointment', highlightthickness=0, bg=self.colour['button'], relief=self.relief['button'])
+        self.appointmentbutton = tk.Button(self, text='Appointment', highlightthickness=0, bg=self.colour['button'], relief=self.relief['button'], command=self.NewAppointment)
         self.invoicemenu = tk.Menubutton(self,text='Invoice', bg=self.colour['button'], relief=self.relief['button'])
         self.prescriptionmenu = tk.Menubutton(self, text='Prescription', bg=self.colour['button'], relief=self.relief['button'])
         self.miscmenu = tk.Menubutton(self, text='Misc', bg=self.colour['button'], relief=self.relief['button'])
@@ -175,10 +181,14 @@ class PatientView(tk.Toplevel):
         self.entryfields['medicaldoctor'].grid(row=6, column=1, sticky=tk.N+tk.E+tk.S+tk.W)
         self.entryfields['typicalcode'].grid(row=6, column=2, sticky=tk.N+tk.E+tk.S+tk.W)
         
-        
-        self.savebutton.grid(row=7,column=6, sticky=tk.N+tk.E+tk.S+tk.W)
+        self.savebutton.grid(row=7,column=6, sticky=tk.N+tk.E+tk.S+tk.W) #fixme move to top row
 
+
+    def NewAppointment(self):
+        if not AppointmentBase.isopen:
+            self.appointment = AppointmentBase(self)
+        
     def Close(self):
-        self.root.patientview = None
+        PatientView.isopen = False
         self.destroy()
         
