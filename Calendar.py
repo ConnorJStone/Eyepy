@@ -4,12 +4,15 @@ from Themes import Colours, Relief
 
 #------------------------------------------------------------------------------
 class Day(tk.PanedWindow):
-
+    # root:
+    #     space paned window needed
+    
     def __init__(self,root):
         # Variables
         self.colour = Colours.calendar
         self.relief = Relief.calendar
         self.log = logging.getLogger('op.calendar.day')
+        self.root = root
 
         # Build Window
         tk.PanedWindow.__init__(self, root, bg=self.colour['frame'], orient=tk.HORIZONTAL)
@@ -23,13 +26,16 @@ class Day(tk.PanedWindow):
         
 # Shows the spaces available for new appointments
 class Day_Available(tk.Frame):
-
+    # root:
+    #     space for frame needed
+    
     def __init__(self, root, day):
         #  Variables
         self.colour = Colours.calendar
         self.relief = Relief.calendar
         self.day = day
         self.log = logging.getLogger('op.calendar.day')
+        self.root = root
 
         # Build Window
         tk.Frame.__init__(self, root, bg=self.colour['frame'])
@@ -67,13 +73,16 @@ class Day_Available(tk.Frame):
         
 # Shows the currently scheduled appointments
 class Day_Scheduled(tk.Frame):
-
+    # root:
+    #     space for frame needed
+    
     def __init__(self, root, day, simplified=False):
         # Variables
         self.colour = Colours.calendar
         self.relief = Relief.calendar
         self.day = day
         self.log = logging.getLogger('op.calendar.day')
+        self.root = root
 
         # Build Window
         tk.Frame.__init__(self, root, bg=self.colour['frame'])
@@ -113,13 +122,17 @@ class Day_Scheduled(tk.Frame):
         
 # To be used for the week and month views
 class Day_Simple(tk.Frame):
-
+    # root:
+    #     space for frame needed
+    #     method "View_Day" must be callable
+    
     def __init__(self, root, day, values):
         # Variables
         self.colour = Colours.calendar
         self.relief = Relief.calendar
         self.day = day
         self.log = logging.getLogger('op.calendar.day')
+        self.root = root
 
         # Build Window
         tk.Frame.__init__(self, root)
@@ -148,7 +161,10 @@ class Day_Simple(tk.Frame):
 
 #------------------------------------------------------------------------------
 class Week(tk.Frame):
-
+    # root:
+    #     space for frame needed
+    #     method "View_Day" must be callable
+    
     def __init__(self, root, day, simplified=False, scheduled=True):
         # Variables
         self.colour = Colours.calendar
@@ -182,7 +198,9 @@ class Week(tk.Frame):
                     
 #------------------------------------------------------------------------------
 class Month(tk.Frame):
-
+    # root:
+    #     space for frame needed
+    #     method "View_Day" must be callable
     def __init__(self, root):
         # Variables
         self.colour = Colours.calendar

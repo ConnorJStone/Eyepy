@@ -4,7 +4,8 @@ from Themes import Colours, Relief
 import Tkinter as tk
 
 class RootMenu(tk.Tk):
-
+    # this is root
+    
     def __init__(self):
         tk.Tk.__init__(self)
 

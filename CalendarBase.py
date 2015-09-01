@@ -4,18 +4,23 @@ from Themes import Colours, Relief
 from Calendar import Day, Week, Month
 
 class CalendarBase(tk.Toplevel):
-
+    # root:
+    #     no space needed
+    #     variable "calendar" can be set to None
+    
     def __init__(self, root):
         # Variables
         self.view = 'day'
         self.log = logging.getLogger('op.calendar')
         self.colour = Colours.calendarbase
         self.relief = Relief.calendarbase
+        self.root = root
 
         # Build Window
         tk.Toplevel.__init__(self, root, bg=self.colour['frame'])
         self.title('Calendar')
-
+        self.protocol('WM_DELETE_WINDOW', self.Close)
+        
         # Window Configure
         self.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(1, weight=0)
@@ -169,3 +174,7 @@ class CalendarBase(tk.Toplevel):
             self.View_Month()
         else:
             self.log.error('Refresh failed to understand self.view variable')
+
+    def Close(self):
+        self.root.calendar = None
+        self.destroy()
