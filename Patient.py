@@ -103,15 +103,14 @@ class PatientView(tk.Toplevel):
         for l in self.labels:
             self.entryfields[l] = tk.Entry(self, bg=self.colour['entry'], relief=self.relief['entry'])
 
-        self.savebutton = tk.Button(self, text='Save', highlightthickness=0, bg=self.colour['savebutton'], relief=self.relief['savebutton'])
 
         self.copybutton = tk.Button(self, text='Copy', highlightthickness=0, bg=self.colour['button'], relief=self.relief['button'])
         self.appointmentbutton = tk.Button(self, text='Appointment', highlightthickness=0, bg=self.colour['button'], relief=self.relief['button'], command=self.NewAppointment)
         self.invoicemenu = tk.Menubutton(self,text='Invoice', bg=self.colour['button'], relief=self.relief['button'])
         self.prescriptionmenu = tk.Menubutton(self, text='Prescription', bg=self.colour['button'], relief=self.relief['button'])
         self.miscmenu = tk.Menubutton(self, text='Misc', bg=self.colour['button'], relief=self.relief['button'])
-        self.deletebutton = tk.Button(self, text='Delete', highlightthickness=0, bg=self.colour['button'], relief=self.relief['button'])
         self.refreshbutton = tk.Button(self,text='Refresh', highlightthickness=0, bg=self.colour['button'], relief=self.relief['button'])
+        self.savebutton = tk.Button(self, text='Save', highlightthickness=0, bg=self.colour['savebutton'], relief=self.relief['savebutton'])
 
         # Menu Definitions
         self.invoicemenu.menu = tk.Menu(self.invoicemenu, tearoff=0)
@@ -135,6 +134,7 @@ class PatientView(tk.Toplevel):
         self.miscmenu.menu.add_command(label='Print Copy CLRx')        
         self.miscmenu.menu.add_command(label='Lab Order')        
         self.miscmenu.menu.add_command(label='Insurance Information')        
+        self.miscmenu.menu.add_command(label='Delete Patient')        
         
         
         # Place Widgets
@@ -143,8 +143,8 @@ class PatientView(tk.Toplevel):
         self.invoicemenu.grid(row=0, column=2, sticky=tk.N+tk.E+tk.S+tk.W)
         self.prescriptionmenu.grid(row=0, column=3, sticky=tk.N+tk.E+tk.S+tk.W)
         self.miscmenu.grid(row=0, column=4, sticky=tk.N+tk.E+tk.S+tk.W)
-        self.deletebutton.grid(row=0, column=5, sticky=tk.N+tk.E+tk.S+tk.W)
-        self.refreshbutton.grid(row=0, column=6, sticky=tk.N+tk.E+tk.S+tk.W)
+        self.refreshbutton.grid(row=0, column=5, sticky=tk.N+tk.E+tk.S+tk.W)
+        self.savebutton.grid(row=0,column=6, sticky=tk.N+tk.E+tk.S+tk.W) 
         self.labels['designation'].grid(row=1, column=0, sticky=tk.N+tk.E+tk.S+tk.W)
         self.labels['firstname'].grid(row=1, column=1, sticky=tk.N+tk.E+tk.S+tk.W)
         self.labels['lastname'].grid(row=1, column=2, sticky=tk.N+tk.E+tk.S+tk.W)
@@ -181,7 +181,6 @@ class PatientView(tk.Toplevel):
         self.entryfields['medicaldoctor'].grid(row=6, column=1, sticky=tk.N+tk.E+tk.S+tk.W)
         self.entryfields['typicalcode'].grid(row=6, column=2, sticky=tk.N+tk.E+tk.S+tk.W)
         
-        self.savebutton.grid(row=7,column=6, sticky=tk.N+tk.E+tk.S+tk.W) #fixme move to top row
 
 
     def NewAppointment(self):

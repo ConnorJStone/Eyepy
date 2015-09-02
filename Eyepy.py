@@ -8,13 +8,21 @@ class RootMenu(tk.Tk):
     # this is root
     
     def __init__(self):
-        tk.Tk.__init__(self)
-        self.title('Eyepy home')
-        
+        # Variables
         self.calendar = None
         self.patients = None
         self.stock = None
         
+        # Build Window
+        tk.Tk.__init__(self)
+        self.title('Eyepy home')
+
+        # Configure Window
+        for i in range(3): self.grid_columnconfigure(i,weight=1)
+
+        self.grid_rowconfigure(0,weight=1)
+        
+        # Widgets
         self.calendarbutton = tk.Button(self,
                                         text='Calendar',
                                         bg=Colours.calendarbase['button'],
@@ -36,9 +44,8 @@ class RootMenu(tk.Tk):
                                      bg=Colours.stockbase['button'],
                                      activebackground=Colours.stockbase['buttonactive'],
                                      relief=Relief.stockbase['button'],
-                                     command=self.StartStock)
-        
-        self.stockbutton.grid(row=1,column=0,sticky=tk.N+tk.S+tk.E+tk.W)
+                                     command=self.StartStock)        
+        self.stockbutton.grid(row=0,column=2,sticky=tk.N+tk.S+tk.E+tk.W)
         
         self.mainloop()
 
