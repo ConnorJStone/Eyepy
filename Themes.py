@@ -85,3 +85,11 @@ class Relief():
              'entry':'flat',
              'label':'raised'}
     
+class Dates():
+    dateformats = {'slashdate':'%Y/%m/%d',
+                   'slashdate_colontime':'%Y/%m/%d %H:%M:%S',
+                   'dashdate':'%Y-%m-%d',
+                   'dashdate_colontime':'%Y-%m-%d %H:%M:%S',
+                   'colontime':'%H:%M:%S'}
+
+    

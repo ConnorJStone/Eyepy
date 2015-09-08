@@ -1,4 +1,5 @@
 import Tkinter as tk
+import logging
 from Themes import Colours, Relief
 
 class StockBase(tk.Toplevel):
@@ -7,12 +8,14 @@ class StockBase(tk.Toplevel):
 
     isopen = False
     
-    def __init__(self,root):
+    def __init__(self, root):
         StockBase.isopen = True
 
         # Variables
+        self.log = logging.getLogger(__name__)
         self.colour = Colours.stockbase
         self.relief = Relief.stockbase
+        self.root = root
 
         # Build Window
         tk.Toplevel.__init__(self,root,bg=self.colour['frame'])
@@ -21,4 +24,5 @@ class StockBase(tk.Toplevel):
 
     def Close(self):
         StockBase.isopen = False
+        self.root.stock = None
         self.destroy()

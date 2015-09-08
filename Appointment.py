@@ -1,9 +1,11 @@
 import Tkinter as tk
+import logging
 from Themes import Colours, Relief
 
 class AppointmentBase(tk.Toplevel):
     # root:
     #     no space needed
+    #     variable 'appointment' can be set to None
     
     isopen = False
     
@@ -11,6 +13,7 @@ class AppointmentBase(tk.Toplevel):
         AppointmentBase.isopen = True
         
         # Variables
+        self.log = logging.getLogger(__name__)
         self.colour = Colours.calendarbase
         self.relief = Relief.calendarbase
         self.root = root
@@ -43,12 +46,14 @@ class AppointmentBase(tk.Toplevel):
 
     def Close(self):
         AppointmentBase.isopen = False
+        self.root.appointment = None
         self.destroy()
 
 class Appointment(tk.Frame):
 
     def __init__(self,root):
         # Variables
+        self.log = logging.getLogger(__name__)
         self.root = root
         self.colour = Colours.calendar
         self.relief = Relief.calendar
@@ -74,3 +79,6 @@ class Appointment(tk.Frame):
         self.appointmentlabel.grid(row=0,column=0,columnspan=2, sticky=tk.N+tk.S+tk.E+tk.W)
         self.scrollbar.grid(row=1, column=1, sticky=tk.N+tk.S)
         self.scheduledlistbox.grid(row=1, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
+
+    def Close(self):
+        pass

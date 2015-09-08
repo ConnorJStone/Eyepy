@@ -1,6 +1,7 @@
 import Tkinter as tk
 from Themes import Colours, Relief
 from Patient import PatientList
+import logging
 
 class PatientBase(tk.Toplevel):
     # root:
@@ -10,6 +11,7 @@ class PatientBase(tk.Toplevel):
     def __init__(self,root):
         PatientBase.isopen = True
         # Variables
+        self.log = logging.getLogger(__name__)
         self.colour = Colours.patientbase
         self.relief = Relief.patientbase
         self.root = root
@@ -19,6 +21,7 @@ class PatientBase(tk.Toplevel):
                          'phonenumber':tk.BooleanVar(),
                          'notes':tk.BooleanVar()}
         self.doctor = tk.StringVar()
+        self.patientlist = None
         
         # Build Window
         tk.Toplevel.__init__(self, root, bg=self.colour['frame'])
@@ -123,4 +126,7 @@ class PatientBase(tk.Toplevel):
         
     def Close(self):
         PatientBase.isopen = False
+        self.root.patients = None
+        if self.patientlist != None:
+            self.patientlist.Close()
         self.destroy()

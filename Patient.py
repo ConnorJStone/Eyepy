@@ -16,7 +16,7 @@ class PatientList(tk.Frame):
         # Variables
         self.colour = Colours.patient
         self.relief = Relief.patient
-        self.log = logging.getLogger('op.patient.list')
+        self.log = logging.getLogger(__name__)
         self.patients = []
         self.root = root
         self.patientview = None
@@ -56,16 +56,22 @@ class PatientList(tk.Frame):
         if not PatientView.isopen:
             self.patientview = PatientView(self)
 
+    def Close(self):
+        if self.patientview != None:
+            self.patientview.Close()
+
 class PatientView(tk.Toplevel):
     # root:
     #     no space needed
-
+    #     variable 'patientview' can be set to None
+    
     isopen = False
     
     def __init__(self, root):
         PatientView.isopen = True
         
         # Variables
+        self.log = logging.getLogger(__name__)
         self.colour = Colours.patient
         self.relief = Relief.patient
         self.root = root
@@ -189,5 +195,6 @@ class PatientView(tk.Toplevel):
         
     def Close(self):
         PatientView.isopen = False
+        self.root.patientview = None
         self.destroy()
         
