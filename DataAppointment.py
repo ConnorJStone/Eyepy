@@ -5,9 +5,10 @@ from os import walk, mkdir
 from glob import glob
 import logging
 
+#------------------------------------------------------------------------------
+# Used to access all database information related to appointments
 class DataAppointment(DataBase):
-    visiblefields = {'firstname':str(), 'lastname':str(), 'code':int(), 'year':int(), 'month':int(), 'day':int(), 'hour':int(), 'minute':int(), 'doctor':str(), 'healthcard'=str(), 'notes':str()}
-    extrafields = {'patient_id':str()}
+    appointmentfields = {'code':'Code', 'date':'Date (yyyy/mm/dd)', 'time':'Time (hh:mm)', 'doctor_id':'Doctor unique id', 'notes':'Notes', 'patient_id':'Patient unique id'}
 
     folder = DataBase.folder+'appointments/'
     
@@ -20,10 +21,7 @@ class DataAppointment(DataBase):
     # -date: a datetime object
     def View(self, _id, date):
         filename = folder+date.strftime('%Y/%m/%d/')+_id+'.appointment' 
-        if isfile(filename):
-            return self._View(filename)
-        else:
-            raise IOError('Could not find: '+filename)
+        return self._View(filename)
 
     # Returns all of the information from the appointment with a given ID. FAR slower than the other option
     # -_id: file unique id
@@ -74,21 +72,20 @@ class DataAppointment(DataBase):
     # Writes the contents to its coresponding file, if this is a new appointment, it will create the header information
     # -contents: all of the appointment information
     def Write(self, contents):
-        for key in ['year','month','day']:
-            if key not in contents[1]:
-                raise AttributeError('necessary field(s) not present for an appointment')
+        if 'date' not in contents[1]:
+            raise AttributeError('necessary field(s) not present for an appointment')
+
+        for key in contents[1]:
+            if key not in DataAppointment.appointmentfields:
+                raise AttributeError('Unknown appointment field: %s' % key)
                 
-        if len(contents[0]) == 0:
-            today = datetime.today()
-            contents[0]['_id'] = self._GetNewID()
-            contents[0]['createdon_date'] = today.strftime('%Y/%m/%d')
-            contents[0]['createdon_time'] = today.strftime('%H:%M:%S')
-            contents[0]['open'] = False
-            contents[0]['lastedited'] = today.strftime('%Y/%m/%d %H:%M:%S')
-            self.log.debug('Created new appointment:\n%s' % str(contents))
+        try:
+            self._NewHeader(contents)
+        except ValueError:
+            pass
 
         try:
-            folder = DataAppointment.folder+contents[0]['createdon_date']
+            folder = DataAppointment.folder+contents[1]['date']
             filename = folder+'/'+contents[0]['_id']+'.appointment'
 
             self._Write(filename, contents)

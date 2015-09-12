@@ -1,3 +1,5 @@
+#------------------------------------------------------------------------------
+# All widget colours are controlled from here
 class Colours():
     #Calendar
     calendarbase = {'frame':'#db4437',
@@ -45,46 +47,50 @@ class Colours():
              'label':'grey'}
 
 
+#------------------------------------------------------------------------------
+# All widget reliefs are controlled from here
 class Relief():
     #Calendar
-    calendarbase = {'frame':'',
+    calendarbase = {'frame':'flat',
                     'button':'flat',
                     'entry':'flat',
                     'savebutton':'flat',
                     'label':'raised'}
     
-    calendar = {'frame':'',
+    calendar = {'frame':'flat',
                 'button':'flat',
                 'savebutton':'flat',
                 'entry':'flat',
                 'label':'raised'}
 
     #Patient
-    patientbase = {'frame':'',
+    patientbase = {'frame':'flat',
                    'button':'flat',
                    'savebutton':'flat',
                    'entry':'flat',
                    'label':'raised'}
     
-    patient = {'frame':'',
+    patient = {'frame':'flat',
                'button':'flat',
                'savebutton':'flat',
                'entry':'flat',
                'label':'raised'}
 
     #Stock
-    stockbase = {'frame':'',
+    stockbase = {'frame':'flat',
                  'button':'flat',
                  'savebutton':'flat',
                  'entry':'flat',
                  'label':'raised'}
     
-    stock = {'frame':'',
+    stock = {'frame':'flat',
              'button':'flat',
              'savebutton':'flat',
              'entry':'flat',
              'label':'raised'}
-    
+
+#------------------------------------------------------------------------------
+# All formats for dates are here
 class Dates():
     dateformats = {'slashdate':'%Y/%m/%d',
                    'slashdate_colontime':'%Y/%m/%d %H:%M:%S',

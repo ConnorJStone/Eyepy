@@ -3,6 +3,8 @@ from Themes import Colours, Relief
 from Patient import PatientList
 import logging
 
+#------------------------------------------------------------------------------
+# Creates the window for the patient list and holds buttons to configure it
 class PatientBase(tk.Toplevel):
     # root:
     #     no space needed
@@ -115,6 +117,7 @@ class PatientBase(tk.Toplevel):
         self.patientlist.grid(row=1,column=0,columnspan=7, sticky=tk.N+tk.S+tk.E+tk.W, padx=5, pady=5)
         
 
+    # Reloads the patient list, with updates that mey have been made elseware
     def Refresh(self):
         try:
             self.patientlist.destroy()

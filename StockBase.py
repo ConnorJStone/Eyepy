@@ -2,6 +2,8 @@ import Tkinter as tk
 import logging
 from Themes import Colours, Relief
 
+#------------------------------------------------------------------------------
+# Holds all stock information
 class StockBase(tk.Toplevel):
     # root:
     #     no space needed

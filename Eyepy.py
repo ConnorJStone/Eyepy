@@ -6,6 +6,7 @@ from datetime import datetime
 import Tkinter as tk
 import logging
 
+#------------------------------------------------------------------------------
 """
 The starting point for eyepy, all resources can be accessed from here.
 
@@ -66,14 +67,17 @@ class RootMenu(tk.Tk):
         # Start main loop, runs the interface
         self.mainloop()
 
+    # Creates the calendar window
     def StartCalendar(self, event=None):
         if not CalendarBase.isopen:
             self.calendar = CalendarBase(self)
 
+    # Creates the patient list wondow
     def StartPatients(self, event=None):
         if not PatientBase.isopen:
             self.patients = PatientBase(self)
 
+    # Creates the stock view window
     def StartStock(self, event=None):
         if not StockBase.isopen:
             self.stock = StockBase(self)

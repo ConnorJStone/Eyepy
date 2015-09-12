@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 
 from Calendar import Day, Week, Month
 
+#------------------------------------------------------------------------------
+# Creates the window to show all calendar information, also has a row of commands to manipulate the calendar
 class CalendarBase(tk.Toplevel):
     # root:
     #     no space needed
@@ -156,6 +158,7 @@ class CalendarBase(tk.Toplevel):
 
         self.log.info('Started the calendar')
 
+    # Changes the current calendar view to show day, week, or month, also changes the textbox day
     def View_Set(self, event=None):
         try:
             self.calendarspace.destroy()
@@ -178,21 +181,24 @@ class CalendarBase(tk.Toplevel):
         self.monthbox.insert(0, self.day.strftime('%m'))
         self.daybox.insert(0, self.day.strftime('%d'))
 
-            
+    # Switches the view to day view
     def View_Day(self, event=None, day=None):
         self.view.set('day')
         if day != None:
             self.day = day
         self.View_Set()
-        
+
+    # Switches the view to week view 
     def View_Week(self, event=None):
         self.view.set('week')
         self.View_Set()
 
+    # Switches the view to month view
     def View_Month(self, event=None):
         self.view.set('month')
         self.View_Set()
 
+    # Attempts to change the date to the one entered in the entry boxes
     def Entry_Day(self, event=None):
         try:
             date = datetime(year=int(self.yearbox.get()), month=int(self.monthbox.get()), day=int(self.daybox.get()))
@@ -202,6 +208,7 @@ class CalendarBase(tk.Toplevel):
 
         self.View_Set()
 
+    # Moves the day being viewed forward by one increment depending on the view type
     def Jump_Forward(self, event=None):
         if self.view.get() == 'day':
             self.Jump_Forward_Day(event)
@@ -212,6 +219,7 @@ class CalendarBase(tk.Toplevel):
         else:
             self.log.error('Could not interpret self.view.get(), got value: %s' % self.view.get())
 
+    # Moves the day being viewed back by one increment depending on the view type
     def Jump_Back(self, event=None):
         if self.view.get() == 'day':
             self.Jump_Back_Day(event)
@@ -222,38 +230,47 @@ class CalendarBase(tk.Toplevel):
         else:
             self.log.error('Could not interpret self.view.get(), got value: %s' % self.view.get())
 
+    # Moves the viewed day forward by one
     def Jump_Forward_Day(self, event=None):
         self.day = self.day + timedelta(days=1)
         self.View_Set()
 
+    # Moves the viewed day forward by one week
     def Jump_Forward_Week(self, event=None):
         self.day = self.day + timedelta(days=7)
         self.View_Set()
-        
+
+    # Moves the viewed day forward by one month
     def Jump_Forward_Month(self, event=None):
         self.day = self.day + timedelta(days=29)
         self.View_Set()
 
+    # Moves the viewed day forward by one year
     def Jump_Forward_Year(self, event=None):
         self.day = self.day + timedelta(days=365)
         self.View_Set()
 
+    # Moves the viewed day forward by one day
     def Jump_Back_Day(self, event=None):
         self.day = self.day - timedelta(days=1)
         self.View_Set()
 
+    # Moves the viewed day forward by one week
     def Jump_Back_Week(self, event=None):
         self.day = self.day - timedelta(days=7)
         self.View_Set()
         
+    # Moves the viewed day forward by one month
     def Jump_Back_Month(self, event=None):
         self.day = self.day - timedelta(days=29)
         self.View_Set()
 
+    # Moves the viewed day forward by one year
     def Jump_Back_Year(self, event=None):
         self.day = self.day - timedelta(days=365)
         self.View_Set()
 
+    # refreshes the view, ie reloads all calendar information
     def Refresh(self, event=None):
         self.View_Set()
 

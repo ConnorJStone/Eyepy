@@ -3,8 +3,9 @@ import logging
 from Themes import Colours, Relief, Dates
 from datetime import datetime, timedelta
 
-from Patient import PatientView
-from Appointment import AppointmentBase
+#from Patient import PatientView
+from PatientViewBase import PatientViewBase
+from AppointmentBase import AppointmentBase
 
 weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -12,14 +13,15 @@ weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 
 for the booked appointments, the order of information should be as follows: TIME (hour, minute, pm/am) LAST NAME, FIRST NAME, HEALTHCARD, PHONE NUMBER, CODE
 for the available appointments the order of information should be: TIME (hour, minute)
 """
-
 #------------------------------------------------------------------------------
-class Day(tk.Frame):#+' '+weekdays[self.day.weekday()]
+# Creates a day view, to show the calendar information for a single day
+class Day(tk.Frame):
     # root:
     #     space for paned window needed
 
     # Day view base
     # -root: parent window/object to give space for the day
+    # -doctor: the doctor's _fixme_, to identify them
     # -day: datetime object with the day to be displayed
     def __init__(self, root, doctor, day):
         # Variables
@@ -60,10 +62,14 @@ class Day(tk.Frame):#+' '+weekdays[self.day.weekday()]
         if self.scheduled != None:
             self.scheduled.Close()
         
+#------------------------------------------------------------------------------
 # Shows the spaces available for new appointments
 class Day_Available(tk.Frame):
     # root:
     #     space for frame needed
+    # -root: parent window/object to give space for the day
+    # -doctor: the doctor's _fixme_, to identify them
+    # -day: datetime object with the day to be displayed
     
     def __init__(self, root, doctor, day):
         #  Variables
@@ -100,10 +106,12 @@ class Day_Available(tk.Frame):
 
         self.Fill()
 
+    # fixme
     def Fill(self):#deleteme
         for i in range(100):
             self.scheduledlistbox.insert(tk.END, 'time available here, %d' % i)
 
+    # Opens a new window with a new appointment view, future will fill in date information
     def NewAppointment(self, event=None):
         if not AppointmentBase.isopen:
             self.appointment = AppointmentBase(self)#fixme, have it send info to the appointment
@@ -113,11 +121,15 @@ class Day_Available(tk.Frame):
             self.appointment.Close()
             
         
+#------------------------------------------------------------------------------
 # Shows the currently scheduled appointments
 class Day_Scheduled(tk.Frame):
     # root:
     #     space for frame needed
-    
+    # -root: parent window/object to give space for the day
+    # -doctor: the doctor's _fixme_, to identify them
+    # -day: datetime object with the day to be displayed
+    # -simplified: used in the week view when true
     def __init__(self, root, doctor, day, simplified=False):
         # Variables
         self.colour = Colours.calendar
@@ -160,22 +172,28 @@ class Day_Scheduled(tk.Frame):
         for i in range(100):
             self.scheduledlistbox.insert(tk.END, 'person info here, %d' % i)
 
+    # Tells root to switch the calendar view to day view
     def View_Day(self, event=None):
         self.root.View_Day(event, self.day)
 
+    # Displays patient information
     def Patient_View(self, event=None):
-        if not PatientView.isopen:
-            self.patientview = PatientView(self)
+        if not PatientViewBase.isopen:
+            self.patientview = PatientViewBase(self, '000g')#fixme
 
     def Close(self):
         if self.patientview != None:
             self.patientview.Close()
                     
-# To be used for the week and month views
+#------------------------------------------------------------------------------
+# To be used for the month view
 class Day_Simple(tk.Frame):
     # root:
     #     space for frame needed
     #     method "View_Day" must be callable
+    # -root: parent window/object to give space for the day
+    # -doctor: the doctor's _fixme_, to identify them
+    # -day: datetime object with the day to be displayed
     
     def __init__(self, root, doctor, day):
         values  = [8,5,8] # fixme deleteme
@@ -214,6 +232,7 @@ class Day_Simple(tk.Frame):
         # Click to jump to day view
         self.daylabel.bind('<Button-1>', self.View_Day)
 
+    # Tells root to switch view to day view
     def View_Day(self, event=None):
         self.root.View_Day(event, self.day)
 
@@ -221,11 +240,15 @@ class Day_Simple(tk.Frame):
         pass
 
 #------------------------------------------------------------------------------
+# Displays all calendar information for a given week
 class Week(tk.Frame):
     # root:
     #     space for frame needed
     #     method "View_Day" must be callable
-    
+    # -root: parent window/object to give space for the day
+    # -doctor: the doctor's _fixme_, to identify them
+    # -day: datetime object with the day to be displayed
+    # -simplified: true for the month view
     def __init__(self, root, doctor, day, simplified=False):
         # Variables
         self.colour = Colours.calendar
@@ -235,6 +258,7 @@ class Week(tk.Frame):
         self.root = root
         self.log = logging.getLogger(__name__)
         self.daylabel = []
+        self.days = []
 
         # Build Window
         tk.Frame.__init__(self, root, bg=self.colour['frame'])
@@ -254,7 +278,6 @@ class Week(tk.Frame):
                 self.daylabel[i].grid(row=0, column=i, sticky=tk.N+tk.S+tk.E+tk.W)
 
         # Fill the week with day objects
-        self.days = []
         for i in range(7):
             day = self.day + timedelta(days=i)
             if simplified:
@@ -264,6 +287,7 @@ class Week(tk.Frame):
 
             self.days[i].grid(row=0 if simplified else 1, column=i, sticky=tk.N+tk.S+tk.E+tk.W)
 
+    # Tells root to switch to day view
     def View_Day(self, event=None, day=None):
         self.root.View_Day(event, day)
 
@@ -272,10 +296,15 @@ class Week(tk.Frame):
             d.Close()
                     
 #------------------------------------------------------------------------------
+# Displays basic information about each day in a month
 class Month(tk.Frame):
     # root:
     #     space for frame needed
     #     method "View_Day" must be callable
+    # -root: parent window/object to give space for the day
+    # -doctor: the doctor's _fixme_, to identify them
+    # -day: datetime object with the day to be displayed
+    
     def __init__(self, root, doctor, day):
         # Variables
         self.colour = Colours.calendar
@@ -285,6 +314,7 @@ class Month(tk.Frame):
         self.root = root
         self.log = logging.getLogger(__name__)
         self.daylabel = []
+        self.weeks = []
 
         # Build Window
         tk.Frame.__init__(self, root, bg=self.colour['frame'])
@@ -302,12 +332,11 @@ class Month(tk.Frame):
             self.daylabel[i].grid(row=0, column=i, sticky=tk.N+tk.S+tk.E+tk.W)
         
         # Fill month with weeks
-        self.weeks = []
         for i in range(4):
-            delta = timedelta(days=7*i)
-            self.weeks.append(Week(self, self.doctor, self.day+delta, True))
+            self.weeks.append(Week(self, self.doctor, self.day+timedelta(days=7*i), True))
             self.weeks[i].grid(row=i+1, column=0, columnspan=7,  sticky=tk.N+tk.S+tk.E+tk.W)
 
+    # Tells root to switch to day view
     def View_Day(self, event=None, day = None):
         self.root.View_Day(event, day)
 
